@@ -1,27 +1,24 @@
-Terraform module which create a PostgreSQL database based on Alibaba Cloud RDS Service.  
- terraform-provider-rds-postgres
- ------------
- 
-English | [简体中文](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/blob/master/README-CN.md)
+terraform-alicloud-rds-postgres
+-------
 
-Terraform module which creates rds-postgres database and sets CMS alarm for it on Alibaba Cloud. 
+本 Module 用于在阿里云的 VPC 下创建一个[Postgre SQL 云数据库](https://help.aliyun.com/document_detail/26092.html)，并为其配置云监控。
 
-These types of resources are supported:
+本 Module 支持创建以下资源:
 
-* [Alicloud_db_instance](https://www.terraform.io/docs/providers/alicloud/r/db_instance.html)
-* [Alicloud_db_account](https://www.terraform.io/docs/providers/alicloud/r/db_account.html)
-* [Alicloud_db_database](https://www.terraform.io/docs/providers/alicloud/r/db_database.html)
-* [Alicloud_db_backup_policy](https://www.terraform.io/docs/providers/alicloud/r/db_backup_policy.html)
-* [alicloud_cms_alarm](https://www.terraform.io/docs/providers/alicloud/r/alarm_rule.html)
+* [Postgre SQL 数据库实例 (db_instance)](https://www.terraform.io/docs/providers/alicloud/r/db_instance.html)
+* [Account 数据库用户实例 (db_account)](https://www.terraform.io/docs/providers/alicloud/r/db_account.html)
+* [Database 数据库实例 (db_database)](https://www.terraform.io/docs/providers/alicloud/r/db_database.html)
+* [BackupPolicy 备份实例 (db_backup_policy)](https://www.terraform.io/docs/providers/alicloud/r/db_backup_policy.html)
+* [CmsAlarm 云监控实例 (cms_alarm)](https://www.terraform.io/docs/providers/alicloud/r/cms_alarm.html)
 
 
-## Terraform versions
+## Terraform 版本
 
-This module requires Terraform 0.12 and Terraform Provider Alicloud 1.71.0+.
+本模板要求使用版本 Terraform 0.12 和阿里云 Provider 1.71.0+。
 
-## Usage
+## 用法
 
-For new instance
+#### 创建新的Rds实例
 
 ```hcl
 module "postgres" {
@@ -91,7 +88,8 @@ module "postgres" {
 }
 ```
 
-For existing instance
+### 使用已经存在的Rds实例
+
 ```hcl
 module "postgres" {
   source = "terraform-alicloud-modules/rds-postgres/alicloud"
@@ -148,37 +146,36 @@ module "postgres" {
 }
 ```
 
+## 示例
 
-## Examples
+* [创建 Postgres 完整示例](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/examples/complete)
+* [使用已经存在的 Rds 实例创建 Postgres 示例](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/examples/using-existing-rds-instance)
 
-* [Complete Example](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/examples/complete)
-* [Using exising Rds Instance Example](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/examples/using-existing-rds-instance)
+## 模块
 
-## Modules
+* [database 模块](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/database)
+* [postgres-10-basic 模块](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-10-basic)
+* [postgres-10-high-availability 模块](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-10-high-availability)
+* [postgres-11-basic 模块](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-11-basic)
+* [postgres-11-high-availability 模块](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-11-high-availability)
+* [postgres-12-basic 模块](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-12-basic)
 
-* [database](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/database)
-* [postgres-10-basic](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-10-basic)
-* [postgres-10-high-availability](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-10-high-availability)
-* [postgres-11-basic](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-11-basic)
-* [postgres-11-high-availability](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-11-high-availability)
-* [postgres-12-basic](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/tree/master/modules/postgres-12-basic)
+## 注意事项
 
-## Notes
+* 本 Module 使用的 AccessKey 和 SecretKey 可以直接从 `profile` 和 `shared_credentials_file` 中获取。如果未设置，可通过下载安装 [aliyun-cli](https://github.com/aliyun/aliyun-cli#installation) 后进行配置。
 
-* This module using AccessKey and SecretKey are from 'profile' and 'shared_credentials_file'.
-If you have not set them yet, please install [aliyun-cli](https://github.com/aliyun/aliyun-cli#installation) and configure it.
-
-Authors
+作者
 -------
 Created and maintained by He Guimin(@xiaozhu36, heguimin36@163.com) and Yi Jincheng(yi785301535@163.com) 
 
-License
+许可
 ----
 Apache 2 Licensed. See LICENSE for full details.
 
-Reference
+参考
 ---------
 * [Terraform-Provider-Alicloud Github](https://github.com/terraform-providers/terraform-provider-alicloud)
 * [Terraform-Provider-Alicloud Release](https://releases.hashicorp.com/terraform-provider-alicloud/)
 * [Terraform-Provider-Alicloud Docs](https://www.terraform.io/docs/providers/alicloud/index.html)
+
 
