@@ -37,55 +37,55 @@ variable "alarm_rule_effective_interval" {
 }
 
 variable "enable_alarm_rule" {
-  description = "Whether to enable alarm rule. Default to true. "
+  description = "Whether to enable alarm rule. Default to true."
   type        = bool
   default     = true
 }
 
 variable "alarm_rule_name" {
-  description = "The alarm rule name. "
+  description = "The alarm rule name."
   type        = string
   default     = ""
 }
 
 variable "alarm_rule_period" {
-  description = "Index query cycle, which must be consistent with that defined for metrics. Default to 300, in seconds. "
+  description = "Index query cycle, which must be consistent with that defined for metrics. Default to 300, in seconds."
   type        = number
   default     = 300
 }
 
 variable "alarm_rule_statistics" {
-  description = "Statistical method. It must be consistent with that defined for metrics. Valid values: ['Average', 'Minimum', 'Maximum']. Default to 'Average'. "
+  description = "Statistical method. It must be consistent with that defined for metrics. Valid values: ['Average', 'Minimum', 'Maximum']. Default to 'Average'."
   type        = string
   default     = "Average"
 }
 
 variable "alarm_rule_operator" {
-  description = "Alarm comparison operator. Valid values: ['<=', '<', '>', '>=', '==', '!=']. Default to '=='. "
+  description = "Alarm comparison operator. Valid values: ['<=', '<', '>', '>=', '==', '!=']. Default to '=='."
   type        = string
   default     = "=="
 }
 
 variable "alarm_rule_threshold" {
-  description = "Alarm threshold value, which must be a numeric value currently. "
+  description = "Alarm threshold value, which must be a numeric value currently."
   type        = string
   default     = ""
 }
 
 variable "alarm_rule_triggered_count" {
-  description = "Number of consecutive times it has been detected that the values exceed the threshold. Default to 3. "
+  description = "Number of consecutive times it has been detected that the values exceed the threshold. Default to 3."
   type        = number
   default     = 3
 }
 
 variable "alarm_rule_contact_groups" {
-  description = "List contact groups of the alarm rule, which must have been created on the console. "
+  description = "List contact groups of the alarm rule, which must have been created on the console."
   type        = list(string)
   default     = []
 }
 
 variable "alarm_rule_silence_time" {
-  description = "Notification silence period in the alarm state, in seconds. Valid value range: [300, 86400]. Default to 86400. "
+  description = "Notification silence period in the alarm state, in seconds. Valid value range: [300, 86400]. Default to 86400."
   type        = number
   default     = 86400
 }
@@ -107,15 +107,15 @@ variable "create_instance" {
 }
 
 variable "engine_version" {
-  description = "RDS Database version. Value options can refer to the latest docs [CreateDBInstance](https://www.alibabacloud.com/help/doc-detail/26228.htm) 'EngineVersion'"
+  description = "PostgresSQL database version. Valid values: '10', '11', '12'."
   type        = string
   default     = ""
 }
 
 variable "instance_name" {
-  description = "The name of Postgre SQL Instance. A random name prefixed with 'terraform-rds-' will be set if it is empty."
+  description = "The name of Postgre SQL Instance. A name with 'tf-module-postgres' will be set if it is empty."
   type        = string
-  default     = ""
+  default     = "tf-module-postgres"
 }
 
 variable "instance_charge_type" {
@@ -169,7 +169,7 @@ variable "tags" {
 # Postgre SQL Backup policy
 ############################
 variable "create_backup_policy" {
-  description = "Whether to create backup policy."
+  description = "Whether to create Postgre SQL instance's backup policy."
   type        = bool
   default     = true
 }
@@ -181,7 +181,7 @@ variable "preferred_backup_period" {
 }
 
 variable "preferred_backup_time" {
-  description = " Postgre SQL Instance backup time, in the format of HH:mmZ- HH:mmZ. "
+  description = " Postgre SQL Instance backup time, in the format of HH:mmZ- HH:mmZ."
   type        = string
   default     = "02:00Z-03:00Z"
 }
@@ -215,7 +215,7 @@ variable "allocate_public_connection" {
 }
 
 variable "connection_prefix" {
-  description = "Prefix of an Internet connection string. A random name prefixed with 'tf-rds-' will be set if it is empty."
+  description = "Prefix of an Internet connection string. It must be checked for uniqueness. It may consist of lowercase letters, numbers, and underlines, and must start with a letter and have no more than 30 characters."
   type        = string
   default     = ""
 }
@@ -271,7 +271,7 @@ variable "account_type" {
 variable "account_privilege" {
   description = "The privilege of one account access database."
   type        = string
-  default     = "ReadOnly"
+  default     = "DBOwner"
 }
 
 
