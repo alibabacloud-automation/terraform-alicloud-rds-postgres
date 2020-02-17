@@ -68,7 +68,7 @@ variable "account_type" {
 variable "account_privilege" {
   description = "The privilege of one account access database."
   type        = string
-  default     = "ReadOnly"
+  default     = "DBOwner"
 }
 
 variable "db_instance_id" {

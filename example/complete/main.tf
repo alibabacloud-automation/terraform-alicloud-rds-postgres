@@ -42,7 +42,7 @@ module "postgres" {
   #################
   # Rds Instance
   #################
-  create_instance=true
+  create_instance      = true
   engine_version       = local.engine_version
   instance_type        = data.alicloud_db_instance_classes.default.instance_classes.0.instance_class
   vswitch_id           = alicloud_vswitch.this.id
