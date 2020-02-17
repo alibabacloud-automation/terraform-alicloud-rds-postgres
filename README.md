@@ -1,5 +1,5 @@
 Terraform module which create a PostgreSQL database based on Alibaba Cloud RDS Service.  
- terraform-provider-rds-postgres
+ terraform-alicloud-rds-postgres
  ------------
  
 English | [简体中文](https://github.com/terraform-alicloud-modules/terraform-alicloud-rds-postgres/blob/master/README-CN.md)
