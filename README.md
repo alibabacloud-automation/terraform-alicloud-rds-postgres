@@ -32,7 +32,7 @@ module "postgres" {
   #################
   # Rds Instance
   #################
-  engine_version       = "10.0"
+  engine_version       = "15.0"
   instance_storage     = 20
   instance_charge_type = "Postpaid"
   vswitch_id           = "vsw-bp1tili2u5kxxxxxx"
