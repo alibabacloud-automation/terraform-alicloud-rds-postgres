@@ -34,6 +34,7 @@ resource "alicloud_db_instance" "this" {
   period               = var.period
   security_ips         = length(var.security_ips) > 0 ? var.security_ips : null
   vswitch_id           = var.vswitch_id
+  ssl_action           = var.ssl_action
   tags = merge(
     {
       Name          = var.instance_name
@@ -63,61 +64,58 @@ resource "alicloud_db_connection" "db_connection" {
 }
 
 resource "alicloud_cms_alarm" "cpu_usage" {
-  count   = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
-  enabled = var.enable_alarm_rule
-  name    = var.alarm_rule_name
-  project = local.project
-  metric  = "CpuUsage"
-  dimensions = {
-    instanceId = local.this_instance_id
-    device     = "/dev/vda1,/dev/vdb1"
-  }
-  statistics         = var.alarm_rule_statistics
+  count              = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
+  enabled            = var.enable_alarm_rule
+  name               = var.alarm_rule_name
+  project            = local.project
+  metric             = "CpuUsage"
+  metric_dimensions  = "[{\"instanceId\":\"${local.this_instance_id}\",\"device\":\"/dev/vda1\"}]"
   period             = var.alarm_rule_period
-  operator           = var.alarm_rule_operator
-  threshold          = var.alarm_rule_threshold
-  triggered_count    = var.alarm_rule_triggered_count
   contact_groups     = var.alarm_rule_contact_groups
   silence_time       = var.alarm_rule_silence_time
   effective_interval = var.alarm_rule_effective_interval
+  escalations_critical {
+    statistics          = var.alarm_rule_statistics
+    comparison_operator = var.alarm_rule_operator
+    threshold           = var.alarm_rule_threshold
+    times               = var.alarm_rule_triggered_count
+  }
 }
 
 resource "alicloud_cms_alarm" "connection_usage" {
-  count   = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
-  enabled = var.enable_alarm_rule
-  name    = var.alarm_rule_name
-  project = local.project
-  metric  = "ConnectionUsage"
-  dimensions = {
-    instanceId = local.this_instance_id
-    device     = "/dev/vda1,/dev/vdb1"
-  }
-  statistics         = var.alarm_rule_statistics
+  count              = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
+  enabled            = var.enable_alarm_rule
+  name               = var.alarm_rule_name
+  project            = local.project
+  metric             = "ConnectionUsage"
+  metric_dimensions  = "[{\"instanceId\":\"${local.this_instance_id}\",\"device\":\"/dev/vda1\"}]"
   period             = var.alarm_rule_period
-  operator           = var.alarm_rule_operator
-  threshold          = var.alarm_rule_threshold
-  triggered_count    = var.alarm_rule_triggered_count
   contact_groups     = var.alarm_rule_contact_groups
   silence_time       = var.alarm_rule_silence_time
   effective_interval = var.alarm_rule_effective_interval
+  escalations_critical {
+    statistics          = var.alarm_rule_statistics
+    comparison_operator = var.alarm_rule_operator
+    threshold           = var.alarm_rule_threshold
+    times               = var.alarm_rule_triggered_count
+  }
 }
 resource "alicloud_cms_alarm" "disk_usage" {
-  count   = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
-  enabled = var.enable_alarm_rule
-  name    = var.alarm_rule_name
-  project = local.project
-  metric  = "DiskUsage"
-  dimensions = {
-    instanceId = local.this_instance_id
-    device     = "/dev/vda1,/dev/vdb1"
-  }
-  statistics         = var.alarm_rule_statistics
+  count              = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
+  enabled            = var.enable_alarm_rule
+  name               = var.alarm_rule_name
+  project            = local.project
+  metric             = "DiskUsage"
+  metric_dimensions  = "[{\"instanceId\":\"${local.this_instance_id}\",\"device\":\"/dev/vda1\"}]"
   period             = var.alarm_rule_period
-  operator           = var.alarm_rule_operator
-  threshold          = var.alarm_rule_threshold
-  triggered_count    = var.alarm_rule_triggered_count
   contact_groups     = var.alarm_rule_contact_groups
   silence_time       = var.alarm_rule_silence_time
   effective_interval = var.alarm_rule_effective_interval
+  escalations_critical {
+    statistics          = var.alarm_rule_statistics
+    comparison_operator = var.alarm_rule_operator
+    threshold           = var.alarm_rule_threshold
+    times               = var.alarm_rule_triggered_count
+  }
 }
 

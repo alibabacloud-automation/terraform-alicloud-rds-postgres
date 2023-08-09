@@ -94,6 +94,12 @@ variable "alarm_rule_silence_time" {
 # Postgre SQL Instance
 #######################
 
+variable "instance_storage_type" {
+  description = "The storage type of the instance"
+  type        = string
+  default     = "cloud_ssd"
+}
+
 variable "existing_instance_id" {
   description = "The Id of an existing postgre sql instance. If set, the 'create_instance' will be ignored."
   type        = string
@@ -115,13 +121,19 @@ variable "engine_version" {
 variable "instance_name" {
   description = "The name of Postgre SQL Instance. A name with 'tf-module-postgres' will be set if it is empty."
   type        = string
-  default     = "tf-module-postgres"
+  default     = ""
 }
 
 variable "instance_charge_type" {
   description = "The instance charge type. Valid values: Prepaid and Postpaid. Default to Postpaid."
   type        = string
   default     = "Postpaid"
+}
+
+variable "period" {
+  description = "The duration that you will buy Postgre SQL Instance (in month). It is valid when instance_charge_type is PrePaid. Valid values: [1~9], 12, 24, 36. Default to 1"
+  type        = number
+  default     = 1
 }
 
 variable "instance_storage" {
@@ -133,18 +145,6 @@ variable "instance_storage" {
 variable "instance_type" {
   description = "Postgres Instance type, for example: rds.pg.s1.small. full list is : https://www.alibabacloud.com/help/zh/doc-detail/26312.htm"
   default     = ""
-}
-
-variable "period" {
-  description = "The duration that you will buy Postgres Instance (in month). It is valid when instance_charge_type is PrePaid. Valid values: [1~9], 12, 24, 36. Default to 1"
-  type        = number
-  default     = 1
-}
-
-variable "ssl_action" {
-  description = "Actions performed on SSL functions, Valid values: Open: turn on SSL encryption; Close: turn off SSL encryption; Update: update SSL certificate. "
-  type        = string
-  default     = "Close"
 }
 
 variable "security_group_ids" {
@@ -172,7 +172,7 @@ variable "tags" {
 }
 
 ############################
-# Postgre SQL Backup policy
+# Postgre SQL Backup Policy
 ############################
 variable "create_backup_policy" {
   description = "Whether to create Postgre SQL instance's backup policy."
@@ -247,9 +247,11 @@ variable "databases" {
   type        = list(map(string))
   default     = []
 }
+
 ###############################
 # Postgre SQL Database Account
 ###############################
+
 variable "create_account" {
   description = "Whether to create a new account. If true, the 'account_name' should not be empty."
   type        = bool
@@ -279,5 +281,3 @@ variable "account_privilege" {
   type        = string
   default     = "DBOwner"
 }
-
-

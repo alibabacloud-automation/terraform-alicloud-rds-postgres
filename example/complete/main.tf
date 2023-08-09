@@ -1,39 +1,49 @@
 variable "region" {
   default = "cn-beijing"
 }
-
 provider "alicloud" {
   region = var.region
 }
+locals {
+  engine                   = "PostgreSQL"
+  engine_version           = "12.0"
+  category                 = "Basic"
+  db_instance_storage_type = "cloud_essd"
+  instance_charge_type     = "PostPaid"
+}
 
-data "alicloud_vpcs" "default" {
-  is_default = true
+data "alicloud_db_zones" "default" {
+  engine                   = local.engine
+  engine_version           = local.engine_version
+  instance_charge_type     = local.instance_charge_type
+  category                 = local.category
+  db_instance_storage_type = local.db_instance_storage_type
 }
-data "alicloud_zones" "default" {
-  available_resource_creation = "Rds"
-  multi                       = true
-  enable_details              = true
+
+resource "alicloud_vpc" "default" {
+  vpc_name   = "terraform-example"
+  cidr_block = "10.4.0.0/16"
 }
-resource "alicloud_vswitch" "this" {
-  name              = "postgres_vpc"
-  availability_zone = data.alicloud_zones.default.zones.0.multi_zone_ids.0
-  vpc_id            = data.alicloud_vpcs.default.vpcs.0.id
-  cidr_block        = cidrsubnet(data.alicloud_vpcs.default.vpcs.0.cidr_block, 4, 15)
+
+resource "alicloud_vswitch" "default" {
+  vswitch_name = "terraform-example"
+  cidr_block   = "10.4.0.0/24"
+  vpc_id       = alicloud_vpc.default.id
+  zone_id      = data.alicloud_db_zones.default.zones.0.id
 }
 module "security_group" {
   source = "alibaba/security-group/alicloud"
   region = var.region
-  vpc_id = data.alicloud_vpcs.default.ids.0
+  vpc_id = alicloud_vpc.default.id
 }
-locals {
-  engine         = "PostgreSQL"
-  engine_version = "10.0"
-}
+
 data "alicloud_db_instance_classes" "default" {
-  engine         = local.engine
-  engine_version = local.engine_version
-  category       = "Basic"
-  storage_type   = "cloud_ssd"
+  zone_id                  = data.alicloud_db_zones.default.zones.0.id
+  engine                   = local.engine
+  engine_version           = local.engine_version
+  category                 = local.category
+  db_instance_storage_type = local.db_instance_storage_type
+  instance_charge_type     = local.instance_charge_type
 }
 module "postgres" {
   source = "../../"
@@ -45,9 +55,9 @@ module "postgres" {
   create_instance      = true
   engine_version       = local.engine_version
   instance_type        = data.alicloud_db_instance_classes.default.instance_classes.0.instance_class
-  vswitch_id           = alicloud_vswitch.this.id
+  vswitch_id           = alicloud_vswitch.default.id
   instance_name        = "PostgreSQLInstance"
-  instance_storage     = lookup(data.alicloud_db_instance_classes.default.instance_classes.0.storage_range, "min")
+  instance_storage     = data.alicloud_db_instance_classes.default.instance_classes.0.storage_range.min
   instance_charge_type = "Postpaid"
   security_group_ids   = [module.security_group.this_security_group_id]
   security_ips         = ["11.193.54.0/24", "101.37.74.0/24", ]
@@ -82,7 +92,7 @@ module "postgres" {
   #######################
   account_privilege = "DBOwner"
   account_name      = "account_name1"
-  account_password  = "yourpassword123"
+  account_password  = "Example12345"
 
   #############
   # Alarm Rule
