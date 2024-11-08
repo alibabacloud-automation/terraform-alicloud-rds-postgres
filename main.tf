@@ -1,30 +1,23 @@
 locals {
-  engine                = "PostgreSQL"
-  this_instance_id      = var.existing_instance_id != "" ? var.existing_instance_id : concat(alicloud_db_instance.this.*.id, [""])[0]
-  create_more_resources = var.existing_instance_id != "" || var.create_instance ? true : false
-  create_account        = local.create_more_resources && var.create_account
-  create_database       = local.create_more_resources && var.create_database
-  create_backup_policy  = local.create_more_resources && var.create_backup_policy
-  project               = "acs_rds_dashboard"
+  engine           = "PostgreSQL"
+  this_instance_id = var.create_instance ? concat(alicloud_db_instance.this[*].id, [""])[0] : var.existing_instance_id
+  project          = "acs_rds_dashboard"
 }
 module "databases" {
-  source                  = "./modules/database"
-  profile                 = var.profile
-  shared_credentials_file = var.shared_credentials_file
-  region                  = var.region
-  skip_region_validation  = var.skip_region_validation
-  create_database         = local.create_database
-  create_account          = local.create_account
-  db_instance_id          = local.this_instance_id
-  account_password        = var.account_password
-  account_type            = var.account_type
-  account_name            = var.account_name
-  account_privilege       = var.account_privilege
-  databases               = var.databases
+  source = "./modules/database"
+
+  create_database   = var.create_database
+  create_account    = var.create_account
+  db_instance_id    = local.this_instance_id
+  account_password  = var.account_password
+  account_type      = var.account_type
+  account_name      = var.account_name
+  account_privilege = var.account_privilege
+  databases         = var.databases
 }
 
 resource "alicloud_db_instance" "this" {
-  count                = var.existing_instance_id != "" ? 0 : var.create_instance ? 1 : 0
+  count                = var.create_instance ? 1 : 0
   engine               = local.engine
   engine_version       = var.engine_version
   instance_type        = var.instance_type
@@ -47,9 +40,9 @@ resource "alicloud_db_instance" "this" {
 }
 
 resource "alicloud_db_backup_policy" "this" {
-  count                       = local.create_backup_policy ? 1 : 0
+  count                       = var.create_backup_policy ? 1 : 0
   instance_id                 = local.this_instance_id
-  backup_retention_period     = var.log_backup_retention_period
+  backup_retention_period     = var.backup_retention_period
   preferred_backup_time       = var.preferred_backup_time
   preferred_backup_period     = var.preferred_backup_period
   log_backup_retention_period = var.log_backup_retention_period
@@ -57,14 +50,14 @@ resource "alicloud_db_backup_policy" "this" {
 }
 
 resource "alicloud_db_connection" "db_connection" {
-  count             = local.create_more_resources && var.allocate_public_connection && var.connection_prefix != "" ? 1 : 0
+  count             = var.allocate_public_connection && var.connection_prefix != "" ? 1 : 0
   instance_id       = local.this_instance_id
   connection_prefix = var.connection_prefix
   port              = var.port
 }
 
 resource "alicloud_cms_alarm" "cpu_usage" {
-  count              = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
+  count              = var.enable_alarm_rule ? 1 : 0
   enabled            = var.enable_alarm_rule
   name               = var.alarm_rule_name
   project            = local.project
@@ -83,7 +76,7 @@ resource "alicloud_cms_alarm" "cpu_usage" {
 }
 
 resource "alicloud_cms_alarm" "connection_usage" {
-  count              = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
+  count              = var.enable_alarm_rule ? 1 : 0
   enabled            = var.enable_alarm_rule
   name               = var.alarm_rule_name
   project            = local.project
@@ -101,7 +94,7 @@ resource "alicloud_cms_alarm" "connection_usage" {
   }
 }
 resource "alicloud_cms_alarm" "disk_usage" {
-  count              = local.create_more_resources && var.enable_alarm_rule ? 1 : 0
+  count              = var.enable_alarm_rule ? 1 : 0
   enabled            = var.enable_alarm_rule
   name               = var.alarm_rule_name
   project            = local.project

@@ -76,11 +76,6 @@ output "this_alarm_rule_enabled" {
   value       = module.postgres.this_alarm_rule_enabled
 }
 
-output "this_alarm_rule_webhook" {
-  description = "The webhook that is called when the alarm is triggered."
-  value       = module.postgres.this_alarm_rule_webhook
-}
-
 output "this_alarm_rule_cpu_usage_status" {
   description = "The current alarm cpu usage rule status."
   value       = module.postgres.this_alarm_rule_cpu_usage_status
@@ -135,10 +130,6 @@ output "this_db_instance_name" {
   value       = module.postgres.this_db_instance_name
 }
 
-output "this_db_instance_period" {
-  description = "Postgre SQL instance charge period when Prepaid."
-  value       = module.postgres.this_db_instance_period
-}
 
 output "this_db_instance_security_ips" {
   description = "Postgre SQL instance security ip list."

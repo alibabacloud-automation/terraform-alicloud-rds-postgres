@@ -1,6 +1,3 @@
-variable "region" {
-  default = "cn-beijing"
-}
 provider "alicloud" {
   region = var.region
 }
@@ -29,16 +26,18 @@ resource "alicloud_vswitch" "default" {
   vswitch_name = "terraform-example"
   cidr_block   = "10.4.0.0/24"
   vpc_id       = alicloud_vpc.default.id
-  zone_id      = data.alicloud_db_zones.default.zones.0.id
+  zone_id      = data.alicloud_db_zones.default.zones[0].id
 }
 module "security_group" {
-  source = "alibaba/security-group/alicloud"
+  source  = "alibaba/security-group/alicloud"
+  version = "~>2.4.0"
+
   region = var.region
   vpc_id = alicloud_vpc.default.id
 }
 
 data "alicloud_db_instance_classes" "default" {
-  zone_id                  = data.alicloud_db_zones.default.zones.0.id
+  zone_id                  = data.alicloud_db_zones.default.zones[0].id
   engine                   = local.engine
   engine_version           = local.engine_version
   category                 = local.category
@@ -47,17 +46,16 @@ data "alicloud_db_instance_classes" "default" {
 }
 module "postgres" {
   source = "../../"
-  region = var.region
 
   #################
   # Rds Instance
   #################
   create_instance      = true
   engine_version       = local.engine_version
-  instance_type        = data.alicloud_db_instance_classes.default.instance_classes.0.instance_class
+  instance_type        = data.alicloud_db_instance_classes.default.instance_classes[0].instance_class
   vswitch_id           = alicloud_vswitch.default.id
   instance_name        = "PostgreSQLInstance"
-  instance_storage     = data.alicloud_db_instance_classes.default.instance_classes.0.storage_range.min
+  instance_storage     = data.alicloud_db_instance_classes.default.instance_classes[0].storage_range.min
   instance_charge_type = "Postpaid"
   security_group_ids   = [module.security_group.this_security_group_id]
   security_ips         = ["11.193.54.0/24", "101.37.74.0/24", ]
