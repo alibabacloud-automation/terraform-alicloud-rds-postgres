@@ -1,4 +1,8 @@
-## 1.3.0 (Unreleased)
+## 2.1.0 (Unreleased)
+## 2.0.0 (November 11, 2024)
+
+- Module: remove deprecated attributes; improve the submodules; [GH-8](https://github.com/alibabacloud-automation/terraform-alicloud-rds-postgres/pull/8)
+
 ## 1.2.0 (August 9, 2023)
 IMPROVEMENTS:
 
