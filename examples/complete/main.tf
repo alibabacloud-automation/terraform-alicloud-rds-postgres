@@ -30,7 +30,7 @@ resource "alicloud_vswitch" "default" {
 }
 module "security_group" {
   source  = "alibaba/security-group/alicloud"
-  version = "~>2.4.0"
+  version = "3.0.0"
 
   region = var.region
   vpc_id = alicloud_vpc.default.id
